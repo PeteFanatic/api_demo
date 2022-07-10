@@ -59,7 +59,7 @@ class _NoteListState extends State<NoteList> {
               _fetchNotes();
             });
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         body: Builder(
           builder: (_) {
@@ -82,6 +82,35 @@ class _NoteListState extends State<NoteList> {
                   confirmDismiss: (direction) async {
                     final result = await showDialog(
                         context: context, builder: (_) => NoteDelete());
+
+                    if (result) {
+                      final deleteResult = await service
+                          .deleteNote(_apiResponse.data![index].noteID!);
+
+                      var message;
+                      if (deleteResult != null && deleteResult.data == true) {
+                        message = 'The note was deleted successfully';
+                      } else {
+                        message =
+                            deleteResult.errorMessage ?? 'An error occured';
+                      }
+
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                                title: Text('Done'),
+                                content: Text(message),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      child: Text('Ok'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      })
+                                ],
+                              ));
+
+                      return deleteResult.data ?? false;
+                    }
                     print(result);
                     return result;
                   },
@@ -101,9 +130,13 @@ class _NoteListState extends State<NoteList> {
                     subtitle: Text(
                         'Last edited on ${formatDateTime(_apiResponse.data![index].latestEditDateTime ?? _apiResponse.data![index].createDateTime!)}'),
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => NoteModify(
-                              noteID: _apiResponse.data![index].noteID!)));
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(
+                              builder: (_) => NoteModify(
+                                  noteID: _apiResponse.data![index].noteID!)))
+                          .then((data) {
+                        _fetchNotes();
+                      });
                     },
                   ),
                 );

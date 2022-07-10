@@ -45,8 +45,8 @@ class _NoteModifyState extends State<NoteModify> {
           errorMessage = response.errorMessage ?? 'An error occurred';
         }
         note = response.data;
-        _titleController.text = note!.noteTitle!;
-        _contentController.text = note!.noteContent!;
+        _titleController.text = note?.noteTitle ?? '';
+        _contentController.text = note?.noteContent ?? '';
       });
     }
   }
@@ -55,7 +55,7 @@ class _NoteModifyState extends State<NoteModify> {
   // ignore: unused_element
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? "Edit note" : "Create note")),
+      appBar: AppBar(title: Text(isEditing ? "Create Note" : "Edit note")),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: _isLoading
