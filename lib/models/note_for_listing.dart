@@ -10,9 +10,7 @@ class NoteForListing {
       {this.noteID,
       this.noteTitle,
       DateTime? createDateTime,
-      DateTime? latestEditDateTime})
-      : createDateTime = createDateTime ?? DateTime.now(),
-        latestEditDateTime = latestEditDateTime ?? DateTime.now();
+      DateTime? latestEditDateTime});
 
   factory NoteForListing.fromJson(Map<String, dynamic> item) {
     return NoteForListing(
