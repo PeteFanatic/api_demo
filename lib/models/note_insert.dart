@@ -1,10 +1,12 @@
-class NoteInsert {
-  String noteTitle;
-  String noteContent;
+import 'package:flutter/foundation.dart';
 
-  NoteInsert({
-    required this.noteTitle,
-    required this.noteContent,
+class NoteManipulation {
+  String? noteTitle;
+  String? noteContent;
+
+  NoteManipulation({
+    @required this.noteTitle,
+    @required this.noteContent,
   });
 
   Map<String, dynamic> toJson() {

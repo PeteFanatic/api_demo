@@ -36,20 +36,18 @@ class _NoteModifyState extends State<NoteModify> {
       setState(() {
         _isLoading = true;
       });
-      notesService.getNote(widget.noteID) {
-        then((response) {
-          setState(() {
-            _isLoading = false;
-          });
-
-          if (response.error) {
-            errorMessage = response.errorMessage ?? 'An error occurred';
-          }
-          note = response.data;
-          _titleController.text = note.noteTitle;
-          _contentController.text = note.noteContent;
+      notesService.getNote(widget.noteID).then((response) {
+        setState(() {
+          _isLoading = false;
         });
-      };
+
+        if (response.error!) {
+          errorMessage = response.errorMessage ?? 'An error occurred';
+        }
+        note = response.data;
+        _titleController.text = note!.noteTitle!;
+        _contentController.text = note!.noteContent!;
+      });
     }
   }
 
@@ -89,7 +87,7 @@ class _NoteModifyState extends State<NoteModify> {
                           setState(() {
                             _isLoading = true;
                           });
-                          final note = NoteInsert(
+                          final note = NoteManipulation(
                               noteTitle: _titleController.text,
                               noteContent: _contentController.text);
                           final result = await notesService.createNote(note);
