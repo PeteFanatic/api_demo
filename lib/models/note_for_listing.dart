@@ -1,4 +1,4 @@
-import 'package:api_demo/models/note.dart';
+//import 'package:api_demo/models/note.dart';
 
 class NoteForListing {
   String? noteID;
@@ -9,8 +9,8 @@ class NoteForListing {
   NoteForListing(
       {this.noteID,
       this.noteTitle,
-      DateTime? createDateTime,
-      DateTime? latestEditDateTime});
+      this.createDateTime,
+      this.latestEditDateTime});
 
   factory NoteForListing.fromJson(Map<String, dynamic> item) {
     return NoteForListing(

@@ -1,17 +1,17 @@
-// ignore_for_file: unnecessary_null_comparison, prefer_final_fields, prefer_const_constructors
+// ignore_for_file: deprecated_member_use, duplicate_ignore, prefer_final_fields, unnecessary_null_comparison, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:api_demo/models/note.dart';
+import 'package:api_demo/models/note_insert.dart';
 import 'package:api_demo/services/note_service.dart';
 
 class NoteModify extends StatefulWidget {
   final String noteID;
-  // ignore: use_key_in_widget_constructors
-  const NoteModify({this.noteID = ''});
+  // ignore: prefer_const_constructors_in_immutables
+  NoteModify({required this.noteID});
 
   @override
-  // ignore: library_private_types_in_public_api
   _NoteModifyState createState() => _NoteModifyState();
 }
 
@@ -20,8 +20,8 @@ class _NoteModifyState extends State<NoteModify> {
 
   NotesService get notesService => GetIt.I<NotesService>();
 
-  late String errorMessage;
-  late Note note;
+  String? errorMessage;
+  Note? note;
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _contentController = TextEditingController();
@@ -32,27 +32,32 @@ class _NoteModifyState extends State<NoteModify> {
   void initState() {
     super.initState();
 
-    setState(() {
-      _isLoading = true;
-    });
-    notesService.getNote(widget.noteID).then((response) {
+    if (isEditing) {
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
+      notesService.getNote(widget.noteID) {
+        then((response) {
+          setState(() {
+            _isLoading = false;
+          });
 
-      if (response.error!) {
-        errorMessage = response.errorMessage ?? 'An error occurred';
-      }
-      note = response.data!;
-      _titleController.text = note.noteTitle!;
-      _contentController.text = note.noteContent!;
-    });
+          if (response.error) {
+            errorMessage = response.errorMessage ?? 'An error occurred';
+          }
+          note = response.data;
+          _titleController.text = note.noteTitle;
+          _contentController.text = note.noteContent;
+        });
+      };
+    }
   }
 
   @override
+  // ignore: unused_element
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? 'Edit note' : 'Create note')),
+      appBar: AppBar(title: Text(isEditing ? "Edit note" : "Create note")),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: _isLoading
@@ -72,14 +77,53 @@ class _NoteModifyState extends State<NoteModify> {
                   SizedBox(
                     width: double.infinity,
                     height: 35,
-                    // ignore: deprecated_member_use
                     child: RaisedButton(
                       // ignore: sort_child_properties_last
-                      child:
-                          Text('Submit', style: TextStyle(color: Colors.white)),
+                      child: const Text('Submit',
+                          style: TextStyle(color: Colors.white)),
                       color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        Navigator.of(context).pop();
+                      onPressed: () async {
+                        if (isEditing) {
+                          // update note
+                        } else {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          final note = NoteInsert(
+                              noteTitle: _titleController.text,
+                              noteContent: _contentController.text);
+                          final result = await notesService.createNote(note);
+
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          // ignore: prefer_const_declarations
+                          final title = 'Done';
+                          final text = result.error!
+                              ? (result.errorMessage ?? 'An error occurred')
+                              : 'Your note was created';
+
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                    title: Text(title),
+                                    content: Text(text),
+                                    actions: <Widget>[
+                                      // ignore: deprecated_member_use
+                                      FlatButton(
+                                        child: const Text('Ok'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  )).then((data) {
+                            if (result.data!) {
+                              Navigator.of(context).pop();
+                            }
+                          });
+                        }
                       },
                     ),
                   )

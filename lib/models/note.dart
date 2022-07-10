@@ -6,11 +6,11 @@ class Note {
   DateTime? latestEditDateTime;
 
   Note(
-      {this.noteID = '',
-      this.noteTitle = '',
-      this.noteContent = '',
-      DateTime? createDateTime,
-      DateTime? latestEditDateTime});
+      {this.noteID,
+      this.noteTitle,
+      this.noteContent,
+      this.createDateTime,
+      this.latestEditDateTime});
 
   factory Note.fromJson(Map<String, dynamic> item) {
     return Note(
