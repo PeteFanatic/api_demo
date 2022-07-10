@@ -1,23 +1,24 @@
-import 'package:api_demo/models/note.dart';
-
-class NoteForListing {
+class Note {
   String? noteID;
   String? noteTitle;
+  String? noteContent;
   DateTime? createDateTime;
   DateTime? latestEditDateTime;
 
-  NoteForListing(
-      {this.noteID,
-      this.noteTitle,
+  Note(
+      {this.noteID = '',
+      this.noteTitle = '',
+      this.noteContent = '',
       DateTime? createDateTime,
       DateTime? latestEditDateTime})
       : createDateTime = createDateTime ?? DateTime.now(),
         latestEditDateTime = latestEditDateTime ?? DateTime.now();
 
-  factory NoteForListing.fromJson(Map<String, dynamic> item) {
-    return NoteForListing(
+  factory Note.fromJson(Map<String, dynamic> item) {
+    return Note(
       noteID: item['noteID'],
       noteTitle: item['noteTitle'],
+      noteContent: item['noteContent'],
       createDateTime: DateTime.parse(item['createDateTime']),
       latestEditDateTime: item['latestEditDateTime'] != null
           ? DateTime.parse(item['latestEditDateTime'])

@@ -55,7 +55,7 @@ class _NoteListState extends State<NoteList> {
         body: Builder(
           builder: (_) {
             if (_isLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             if (_apiResponse!.error!) {
               return Center(child: Text(_apiResponse!.errorMessage!));
@@ -71,6 +71,7 @@ class _NoteListState extends State<NoteList> {
                   confirmDismiss: (direction) async {
                     final result = await showDialog(
                         context: context, builder: (_) => NoteDelete());
+                    // ignore: avoid_print
                     print(result);
                     return result;
                   },
@@ -78,6 +79,7 @@ class _NoteListState extends State<NoteList> {
                     color: Colors.red,
                     padding: const EdgeInsets.only(left: 16),
                     child: const Align(
+                      // ignore: sort_child_properties_last
                       child: Icon(Icons.delete, color: Colors.white),
                       alignment: Alignment.centerLeft,
                     ),
